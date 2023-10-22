@@ -84,7 +84,11 @@ These steps will walk you through setting up a fully featured _pkgsite_ deployme
    pkgsite-redis-master-0    1/1     Running     0          9m48s
    pkgsite-setup-db-snxmb    0/1     Completed   0          9m36s
    ```
+5. Browse your docs locally:
 
+   ```bash
+   kubectl port-forward svc/pkgsite -n pkgsite 8080
+   ```
 
 ## Uninstalling
 
@@ -97,8 +101,17 @@ These steps will walk you through setting up a fully featured _pkgsite_ deployme
 
     ```bash
     kukectl delete pvc -l app.kubernetes.io/instance=pkgsite
-
     ```
+
+## Exposing the service
+
+This step will vary according to your cluster's networking. Some options are:
+
+* Update the [serviceType](./helm/values.yaml#71) to LoadBalancer
+* Enable and configure an [Ingress resource](./helm/values.yaml#74)
+* Configure an ingress using custom networking solutions such as Istio or Consul. Refer to their documentation for instructions.
+
+⚠️ Take care to not expose private go modules documentation to the public internet.
 
 ## Advanced configuration
 
