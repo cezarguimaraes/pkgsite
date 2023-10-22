@@ -1,6 +1,6 @@
 # pkgsite
 
-Although [pkg.go.dev](https://pkg.go.dev/) has been opensourced a few years ago, self-hosting a fully featured version of pkgsite for private packages is a cumbersome process. 
+Although [pkg.go.dev](https://pkg.go.dev/) has been [opensourced a few years ago](https://go.dev/blog/pkgsite), self-hosting a fully featured version of pkgsite for private packages is still a cumbersome process. 
 
 This repository provides a Helm chart to:
 1. Deploy the pkgsite frontend.
