@@ -9,7 +9,7 @@ helm install pkgsite pkgsite/pkgsite
 
 ## Getting started
 
-These steps will walk you through setting up a fully featured _pkgsite_, including a _go module proxy_ able to retrieve private Go packages hosted on Github.
+These steps will walk you through setting up a fully featured _pkgsite_ deployment, including a _go module proxy_ able to retrieve private Go packages hosted on Github.
 
 1. Create a namespace to contain pkgsite resources.
 
@@ -56,7 +56,7 @@ These steps will walk you through setting up a fully featured _pkgsite_, includi
                   key: download.hcl
         ```
 
-        Note the [`.athens-proxy.downloadMode`](https://docs.gomods.io/configuration/download/) property. This example configures _athens-proxy_ to serve private packages from `github.com/YOURORGANIZATION/*` while redirecting any other package to Go's [default module mirror](https://proxy.golang.org/).
+        Note the [`.athens-proxy.downloadMode`](https://docs.gomods.io/configuration/download/) property. This example configures _athens-proxy_ to serve private packages from `github.com/YOURORGANIZATION/*`, while redirecting any other package to Go's [default module mirror](https://proxy.golang.org/) for improved performance and reduced costs.
 3. Install the chart
    1. Using the _values.yaml_ file created on the previous step:
   
