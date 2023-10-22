@@ -1,5 +1,13 @@
 # pkgsite
 
+Although [pkg.go.dev](https://pkg.go.dev/) has been opensourced a few years ago, self-hosting a fully featured version of pkgsite for private packages is a cumbersome process. 
+
+This repository provides a Helm chart to:
+1. Deploy the pkgsite frontend.
+2. Deploy, migrate and seed its PostgreSQL database, powered by the [bitnami/postgresql](https://artifacthub.io/packages/helm/bitnami/postgresql) Chart.
+3. Optionally deploy a Redis cluster, used by the frontend to cache rendered pages. Powered by the [bitnami/redis](https://artifacthub.io/packages/helm/bitnami/redis) Chart.
+4. Optionally deploy an [athens-proxy](https://github.com/gomods/athens#welcome-to-athens-gophers) instance, in order to provide access to private go modules.
+
 ## Installing
 
 ```bash
