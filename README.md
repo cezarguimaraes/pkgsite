@@ -99,3 +99,60 @@ These steps will walk you through setting up a fully featured _pkgsite_ deployme
     kukectl delete pvc -l app.kubernetes.io/instance=pkgsite
 
     ```
+
+## Advanced configuration
+
+All YAML snippets in this section should be included in your custom _values.yaml_ file.
+
+### Seeded packages
+
+   You can change the list of packages that are seeded when the chart is installed:
+
+   ```yaml
+   seed:
+     packages:
+     - std@latest
+     - golang.org/x/tools@latest
+     - github.com/YOURORGANIZATION/YOURPACKAGE@all
+   ```
+
+   > Note you can seed all versions of a package, including `std`. It can, however, take a long time. Seeding packages is not necessary: users can request that any package be fetched by navigating to `pkgsite.domain/<import-path>[@version]`.
+
+### ReplicaCount, Autoscaling, Service & Ingress
+
+   Find the complete list of deployment settings in the default [_values.yaml_ file](./helm/values.yaml).
+
+### PostgreSQL
+
+   Find the complete list of PostgreSQL settings in the chart's [ArtifactHub page](https://artifacthub.io/packages/helm/bitnami/postgresql#parameters). Prefix parameters by `postgresql`:
+
+   ```yaml
+   postgresql:
+     image:
+       registry: my-private-container-registry.io
+   ```
+
+### Redis
+
+   Find the complete list of Redis settings in the chart's [ArtifactHub page](https://artifacthub.io/packages/helm/bitnami/redis#parameters). Prefix parameters by `redis`:
+
+   ```yaml
+   redis:
+     architecture: replication
+   ```
+
+### athens-proxy
+
+   Find the complete list of athens-proxy settings in the chart's [Github Repository](https://github.com/gomods/athens-charts/blob/main/charts/athens-proxy/values.yaml). Prefix parameters by `athens-proxy`:
+   
+   ```yaml
+   athens-proxy:
+     storage:
+       type: disk
+       disk:
+         storageRoot: "/var/lib/athens"
+         persistence:
+           enabled: true
+           accessMode: ReadWriteOnce
+           size: 4Gi
+   ```
