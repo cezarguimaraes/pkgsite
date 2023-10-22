@@ -8,6 +8,19 @@ This repository provides a Helm chart to:
 3. Optionally deploy a Redis cluster, used by the frontend to cache rendered pages. Powered by the [bitnami/redis](https://artifacthub.io/packages/helm/bitnami/redis) Chart.
 4. Optionally deploy an [athens-proxy](https://github.com/gomods/athens#welcome-to-athens-gophers) instance, in order to provide access to private go modules.
 
+- [pkgsite](#pkgsite)
+  * [Installing](#installing)
+  * [Getting started](#getting-started)
+  * [Uninstalling](#uninstalling)
+  * [Exposing the service](#exposing-the-service)
+  * [Advanced configuration](#advanced-configuration)
+    + [Seeded packages](#seeded-packages)
+    + [Deployment settings](#deployment-settings)
+    + [PostgreSQL](#postgresql)
+    + [Redis](#redis)
+    + [athens-proxy](#athens-proxy)
+
+
 ## Installing
 
 ```bash
@@ -131,7 +144,7 @@ All YAML snippets in this section should be included in your custom _values.yaml
 
    > Note you can seed all versions of a package, including `std`. It can, however, take a long time. Seeding packages is not necessary: users can request that any package be fetched by navigating to `pkgsite.domain/<import-path>[@version]`.
 
-### ReplicaCount, Autoscaling, Service & Ingress
+### Deployment settings
 
    Find the complete list of deployment settings in the default [_values.yaml_ file](./helm/values.yaml).
 
