@@ -1,0 +1,12 @@
+dependencies:
+- name: postgresql
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 13.1.5
+- name: redis
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 18.1.6
+- name: athens-proxy
+  repository: https://gomods.github.io/athens-charts
+  version: 0.7.1
+digest: sha256:13e5d08774201238de5bd6adba7a8841907a0e0e06deb8214b6cf73bc10c4ea2
+generated: "2023-10-22T14:30:45.553601699-03:00"

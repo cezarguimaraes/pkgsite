@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "pkgsite.fullname" . }}
+  labels:
+    {{- include "pkgsite.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "pkgsite.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "pkgsite.labels" . | nindent 8 }}
+	{{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "pkgsite.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: check-db
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          env:
+            - name: GO_DISCOVERY_DATABASE_HOST
+              value: "{{ include "pkgsite.postgresql.host" . }}"
+          command: ["sh", "-ec"]
+          args:
+            - "nc -v -z -w 10 ${GO_DISCOVERY_DATABASE_HOST} 5432"
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: GO_DISCOVERY_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "pkgsite.postgresql.password.secret" . }}
+                  key: postgres-password
+            - name: GO_DISCOVERY_DATABASE_HOST
+              value: "{{ include "pkgsite.postgresql.host" . }}"
+            {{- if $.Values.redis.enabled }}
+            - name: GO_DISCOVERY_REDIS_HOST
+            # TODO: use exact logic from redis chart
+              value: "{{ include "pkgsite.redis.host" . }}"
+            {{- end }}
+          args:
+            - -local
+            - -host=0.0.0.0:{{ .Values.service.port }}
+            - "-proxy_url={{ include "pkgsite.goproxy" . }}"
+            - "-bypass_license_check={{ $.Values.bypassLicenseCheck }}"
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

@@ -1,0 +1,9 @@
+{{- $athens := index $.Values "athens-proxy" }}
+{{- if and $athens.enabled $athens.downloadMode }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: athens-config
+data:
+  download.hcl: {{ printf "custom:%s" ($athens.downloadMode | b64enc) | quote }}
+{{- end }}

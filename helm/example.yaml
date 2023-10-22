@@ -1,0 +1,28 @@
+athens-proxy:
+  enabled: true
+
+  downloadMode: |
+    downloadURL = "https://proxy.golang.org"
+
+    mode = "redirect"
+
+    download "github.com/cezarguimaraes/private*" {
+      mode = "sync"
+    }
+
+  configEnvVars:
+    - name: ATHENS_GONOSUM_PATTERNS
+      value: github.com/cezarguimaraes/private*
+    - name: ATHENS_GITHUB_TOKEN
+      valueFrom:
+        # this secret is expected to exist. Example:
+        # kubectl create secret generic github-token --from-literal=token=$GITHUB_TOKEN
+        secretKeyRef: 
+          name: github-token
+          key: token
+    - name: ATHENS_DOWNLOAD_MODE
+      valueFrom:
+        # this configMap is created by setting athens-proxy.downloadMode
+        configMapKeyRef:
+          name: athens-config
+          key: download.hcl

@@ -1,0 +1,49 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "pkgsite.fullname" . }}-setup-db
+  labels:
+    {{- include "pkgsite.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  template:
+    metadata:
+      name: {{ include "pkgsite.fullname" . }}-setup-db
+      labels:
+        {{- include "pkgsite.labels" . | nindent 8 }}
+    spec:
+      restartPolicy: Never
+      volumes:
+        - name: seed
+          configMap:
+            name: {{ include "pkgsite.fullname" . }}
+      containers:
+      - name: setup-db
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        env:
+        - name: GO_DISCOVERY_DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "pkgsite.postgresql.password.secret" . }}
+              key: postgres-password
+        - name: GO_DISCOVERY_DATABASE_HOST
+          value: "{{ include "pkgsite.postgresql.host" . }}"
+        - name: GO_MODULE_PROXY_URL
+          value: {{ include "pkgsite.goproxy" . }}
+        volumeMounts:
+          - name: seed
+            mountPath: /seed
+            readOnly: true
+        command: ["sh", "-exc"]
+        args:
+          - |
+            nc -z -w 10 ${GO_DISCOVERY_DATABASE_HOST} 5432
+            db create
+            sh ./devtools/migrate_db.sh up
+            seeddb \
+              -keep_going \
+              -bypass_license_check={{ $.Values.bypassLicenseCheck }} \
+              -seed=/seed/packages
