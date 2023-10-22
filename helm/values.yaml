@@ -33,10 +33,10 @@ seed:
 replicaCount: 1
 
 image:
-  repository: cezarguimaraes/pkgsite
+  repository: ghcr.io/cezarguimaraes/pkgsite
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  tag: ""
 
 imagePullSecrets: []
 nameOverride: ""
