@@ -5,6 +5,6 @@
 {{- $athensCtx := dict "Values" $athens "Release" $.Release "Chart" $athensChart -}}
 http://{{- template "fullname" $athensCtx }}.{{ $.Release.Namespace }}.svc.cluster.local
 {{- else -}}
-https://proxy.golang.org
+{{ $.Values.goproxy }}
 {{- end }}
 {{- end}}

@@ -21,8 +21,12 @@ redis:
   auth:
     enabled: false
 
-# pkgsite specific valuesl
+# pkgsite specific values
 bypassLicenseCheck: true
+
+# goproxy sets the module mirror URL to use. This is ignored when athens-proxy 
+# is enabled.
+goproxy: "https://proxy.golang.org"
 
 seed:
   packages:
