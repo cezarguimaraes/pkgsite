@@ -9,12 +9,17 @@ metadata:
     "helm.sh/hook-weight": "0"
     "helm.sh/hook-delete-policy": before-hook-creation
 spec:
+  backoffLimit: {{ .Values.seed.backoffLimit }}
   template:
     metadata:
       name: {{ include "pkgsite.fullname" . }}-setup-db
       labels:
         {{- include "pkgsite.labels" . | nindent 8 }}
     spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       restartPolicy: Never
       volumes:
         - name: seed
